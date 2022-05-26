@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reading</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <link rel="stylesheet" href="online_reading.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+
+        let API_KEYS = [
+            //"AIzaSyDyOSUTu8Qhas3DInL4oAQiybHiHhlxEog",
+            //"AIzaSyA3SKpJWiluoMa6gVfkTiMFwBweMPTFeo8",
+            //"AIzaSyDhjQI_mWVSopVuSqTszfReeCbQjcyyAbs",
+            //"AIzaSyAayBeVS75SgsGSxUw1SJS0ApUmdRpBP3U",
+            //"AIzaSyBvYLFoNozujV4qO3CA_ZGXq2lTP894oaw",
+            //"AIzaSyBhMva4z1unRMxHcapp3XDXD_8ses_CQpg",
+            //"AIzaSyBYIrs56e8j8dovJqjK2cobQekEHB1ATEY",
+            //"AIzaSyC6DdZP_2Wwq2AayoL1U3j1EIrbEZk-95Q"
+             "AIzaSyA3OSrq4653pPS4Kwvi6hJIuOWu7z0kEJk",
+            //"AIzaSyBWaIRmXQbpyBmHzBhpqojiq2qrcy2SaVQ",
+            //"AIzaSyAmm0jwWxOfYXTcog_RouZy2GXKYDJImU8",
+            //"AIzaSyCsLmqgcm5As4N3BxULriEaNkb4u6D6jZo"
+        ]
+
+        $( function() {
+            $( "#app" ).draggable();
+        } );
+
+        function getImage(name, element) {
+            var API_KEY = '27223090-f20c4485011212d064572bcf3';
+            var URL = "https://pixabay.com/api/?key=" + API_KEY + "&q="+encodeURIComponent(name);
+            fetch(URL).then(res => res.json()).then(data => {
+                element.setAttribute('src', data.hits[0].webformatURL)
+            });
+        }
+
+        window.onload = function() {
+            let noChange = false
+            document.addEventListener('keydown', function(event) {
+                if (event.ctrlKey && event.key === 'i') {
+                    noChange ^= true
+                }
+            });
+
+            let buttonOverview = document.getElementById("overview")
+            let buttonDefinition = document.getElementById("definition")
+
+            buttonOverview.addEventListener("click", function(event) {
+                    if (noChange) {
+                        return
+                    }
+                    buttonOverview.className = "active"
+                    document.getElementById("card2").style.display = "block"
+                    buttonDefinition.classList.remove("active")
+                    document.getElementById("card1").style.display = "none"
+
+                }
+            )
+
+            buttonDefinition.addEventListener("click", function(event) {
+                    if (noChange) {
+                        return
+                    }
+                    buttonOverview.classList.remove("active")
+                    document.getElementById("card2").style.display = "none"
+                    buttonDefinition.className = "active"
+                    document.getElementById("card1").style.display = "block"
+                }
+            )
+
+
+            let test = document.getElementById("text")
+            for (let i = 0; i < test.children.length; i++) {
+                let elem = test.children[i]
+                let words = elem.innerHTML.split(" ")
+                let newStr = ""
+                for (var j = 0; j < words.length - 1; j++) {
+                    newStr += "<span class=\"" + words[j] + "_" + words[j + 1] + "\">" + " " + words[j] + " " + "</span>"
+                }
+                newStr += "<span class=\"" + words[words.length - 1] + "\">" + " " + words[words.length - 1] + " " + "</span>"
+                elem.innerHTML = newStr
+                for (let j = 0; j < elem.children.length; j++) {
+                    let current = elem.children[j]
+                    current.addEventListener("mouseenter", function (event) {
+                        if (noChange) {
+                            return
+                        }
+                        event.target.style.color = "purple";
+                        let cardHeader = document.getElementById("card1").getElementsByTagName("h3").item(0)
+                        let cardImg = document.getElementById("card1").getElementsByTagName("img").item(0)
+                        let cardDefinition = document.getElementById("card1").getElementsByTagName("p").item(0)
+                        let cardLink = document.getElementById("card1").getElementsByTagName("a").item(0)
+                        let currentFirstWord = current.innerHTML.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+
+                        let dictionaryRequest = "https://api.dictionaryapi.dev/api/v2/entries/en/" + currentFirstWord
+
+                        let currentWordsReq = current.className.replace(/[.,\/#!$%\^&\*;:{}=\-`~()]/g, "").split("_").join("%")
+                        let link = "https://en.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&origin=*&srlimit=20&format=json&srsearch=" + currentWordsReq
+                        let cardHeaderOverview = document.getElementById("card2").getElementsByTagName("h3").item(0)
+                        let cardLinkImg = document.getElementById("card2").getElementsByTagName("img").item(0)
+                        let cardOverview = document.getElementById("card2").getElementsByTagName("p").item(0)
+                        let cardOverviewLink = document.getElementById("card1").getElementsByTagName("a").item(0)
+
+
+                        fetch(dictionaryRequest)
+                            .then(res => res.json()) // the .json() method parses the JSON response into a JS object literal
+                            .then(data => {
+                                cardHeader.innerHTML = currentFirstWord
+                                cardDefinition.innerHTML = data[0]["meanings"][0]["definitions"][0]["definition"]
+                                getImage(currentFirstWord, cardImg)
+                                cardLink.href = "https://www.dictionary.com/browse/" + currentFirstWord
+                            });
+
+                        // Overview card
+
+                        cardHeaderOverview.innerHTML = currentWordsReq.split("%").join(" ")
+
+                        fetch(link)
+                            .then(res => res.json()) // the .json() method parses the JSON response into a JS object literal
+                            .then(data => {
+                                curData = data.query.search[0].snippet
+                                cleanText = curData.replace(/<\/?[^>]+(>|$)/g, "");
+                                cardOverview.innerHTML = cleanText
+                            });
+
+                        if (buttonOverview.className === "active") {
+                            for (let key of API_KEYS) {
+                                let imageLink = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=751cef207f67f5755&searchType=image&imgSize=medium&q=" + currentWordsReq
+                                try {
+                                    var isThere = false
+                                    fetch(imageLink)
+                                        .then(res => res.json()) // the .json() method parses the JSON response into a JS object literal
+                                        .then(data => {
+                                            cardLinkImg.setAttribute('src', data["items"][0]["link"])
+                                            isThere = true
+                                        });
+                                    if (isThere) {
+                                        break;
+                                    }
+                                } catch (Exception) {
+                                }
+                            }
+                        }
+                    }, false);
+
+                    current.addEventListener("mouseout", function (event) {
+                        if (noChange) {
+                            return
+                        }
+                        // highlight the mouseenter target
+                        event.target.style.color = "black";
+                        // reset the color after a short delay
+                    }, false);
+                }
+            }
+        };
+    </script>
+</head>
+<body>
+<div id="text">
+    <h1>Spring Framework - Overview</h1>
+    <p>Spring is the most popular application development framework for enterprise Java. Millions of developers around the world use Spring Framework to create high performing, easily testable, and reusable code.</p>
+    <p> Spring framework is an open source Java platform. It was initially written by Rod Johnson and was first released under the Apache 2.0 license in June 2003.</p>
+    <p> Spring is lightweight when it comes to size and transparency. The basic version of Spring framework is around 2MB.</p>
+    <p> The core features of the Spring Framework can be used in developing any Java application, but there are extensions for building web applications on top of the Java EE platform. Spring framework targets to make J2EE development easier to use and promotes good programming practices by enabling a POJO-based programming model.</p>
+    <h2>Benefits of Using the Spring Framework</h2>
+    <p>Following is the list of few of the great benefits of using Spring Framework −</p>
+    <p>Spring enables developers to develop enterprise-class applications using POJOs. The benefit of using only POJOs is that you do not need an EJB container product such as an application server but you have the option of using only a robust servlet container such as Tomcat or some commercial product.</p>
+    <p>Spring is organized in a modular fashion. Even though the number of packages and classes are substantial, you have to worry only about the ones you need and ignore the rest.</p>
+    <p>Spring does not reinvent the wheel, instead it truly makes use of some of the existing technologies like several ORM frameworks, logging frameworks, JEE, Quartz and JDK timers, and other view technologies.</p>
+    <p>Testing an application written with Spring is simple because environment-dependent code is moved into this framework. Furthermore, by using JavaBeanstyle POJOs, it becomes easier to use dependency injection for injecting test data.</p>
+    <p>Spring's web framework is a well-designed web MVC framework, which provides a great alternative to web frameworks such as Struts or other over-engineered or less popular web frameworks.</p>
+    <p>Spring provides a convenient API to translate technology-specific exceptions (thrown by JDBC, Hibernate, or JDO, for example) into consistent, unchecked exceptions.</p>
+    <p>Lightweight IoC containers tend to be lightweight, especially when compared to EJB containers, for example. This is beneficial for developing and deploying applications on computers with limited memory and CPU resources.</p>
+    <p>Spring provides a consistent transaction management interface that can scale down to a local transaction (using a single database, for example) and scale up to global transactions (using JTA, for example).</p>
+</div>
+
+<div id="app">
+    <div class="topnav">
+        <a id="definition" href="#news" class="active">Definition</a>
+        <a id="overview" href="#home" >Overview</a>
+    </div>
+    <div id="cards">
+
+        <div class="card" id="card1" >
+            <h3>Spring</h3>
+            <p>Spring</p>
+            <img src="#" alt="Qries" width="300px" height="200px" >
+            <div><a href="#" style="color: white">читать далее</a></div>
+        </div>
+        <div class="card" id="card2" style="display: none">
+            <h3>Spring</h3>
+            <p>Spring</p>
+            <figure>
+                <img src="#" alt="No image">
+                <br/>
+                <a href="#" style="color: white">читать далее</a>
+            </figure>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -22,7 +22,7 @@ margin-top: 80px;
 .pressed-button {
     text-decoration: none;
     display: inline-block;
-    margin: 25px;
+    margin: 20px;
     padding: 20px;
     border-radius: 30px;
     background-image: linear-gradient(45deg, #dfffcd 0%, #9effa7 50%, #3d7cff 100%);
