@@ -1,0 +1,106 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+
+}
+
+.page{
+    width: 95%;
+    height: 95%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+}
+
+#text{
+    margin: 10px;
+    overflow: scroll; /* Добавляем полосы прокрутки */
+    font-size: 18px;
+    width: 95%; /* Ширина блока */
+    height: 150px; /* Высота блока */
+    padding: 25px; /* Поля вокруг текста */
+    border: solid 1px #abf5a0; /* Параметры рамки */
+    border-radius: 5px;
+    text-align: center;
+    color: black;
+    margin-top: -15px;
+}
+
+#cards{
+    margin: 10px;
+    overflow: scroll; /* Добавляем полосы прокрутки */
+    width: 95%; /* Ширина блока */
+    height: 300px; /* Высота блока */
+    padding: 5px; /* Поля вокруг текста */
+    border: solid 1px #abf5a0; /* Параметры рамки */
+    border-radius: 5px;
+}
+
+.buttons{
+    text-align: center;
+}
+
+.pressed-button {
+    text-decoration: none;
+    border-radius: 50%;
+    background-image: linear-gradient(45deg, #75d76a 0%, #33d9de 50%, #33ee00 100%);
+    background-position: 100% 0;
+    background-size: 200% 200%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: white;
+    box-shadow: 0 16px 32px 0 rgba(53, 255, 117, 0.35);
+    transition: .5s;
+    margin: 20px;
+    padding: 30px;
+
+}
+
+.pressed-button:hover {
+    box-shadow: 0 0 0 0 rgba(0, 40, 120, 0);
+    background-position: 0 0;
+}
+
+form{
+   display: inline-block;
+    margin: 10px 20px;
+}
+
+
+.close-button1{
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 30px;
+    background-image: linear-gradient(45deg, #ffcdd1 0%, #f5091d 50%, #5d0407 100%);
+    background-position: 100% 0;
+    background-size: 200% 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 300;
+    color: white;
+    box-shadow: 0 16px 32px 0 rgba(0, 40, 120, .35);
+    transition: .5s;
+}
+
+.card{
+    background: linear-gradient(to left, rgba(100, 224, 52, 0.79), rgba(56, 201, 201, 0.82));
+    width: 95%;
+    margin: 10px;
+    border-radius: 20px;
+    color: white;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 16px 32px 0 rgba(0, 40, 120, .35);
+    padding: 20px;
+}
+
+
+
+
